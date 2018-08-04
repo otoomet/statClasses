@@ -143,10 +143,6 @@ setAs("lm", "Stat", lmToStat)
 setAs("lmc", "Stat", lmToStat)
 rm(lmToStat)
 
-setAs("plm", "Stat", function(from, to) new(to,
-                                            coefficients=coef(from),
-                                            vcov=vcov(from),
-                                            auxiliary=list(nObs=nObs(from))))
 setAs("maxLik", "Stat",
       function(from, to)
       new(to,
@@ -603,7 +599,6 @@ rm(names.Estimates)
 
 library(miscTools)
 setMethod("nObs", "minority", function(x) length(x$residuals))
-setMethod("nObs", "plm", function(x) length(x$residuals))
 setMethod("nObs", "polr", function(x) x$n)
 setMethod("nObs", "prq", function(x) as.integer(x$nObs))
 setMethod("nObs", "Stat", function(x) x@nObs)
@@ -1054,10 +1049,6 @@ setMethod("varValue", "minority", varValue.lm)
 rm(varValue.lm)
    
 setMethod("vcov", "Stat", function(object, ...) object@vcov)
-
-vcov.plm <- function(object, ...) {
-   object$vcov
-}
 
 vcov.rq <- function(object, ...) {
    s <- summary(object, ..., se="iid", covariance=TRUE)
