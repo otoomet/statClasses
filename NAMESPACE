@@ -9,4 +9,5 @@ importFrom( "miscTools", "stdEr" )
 importFrom("stats", "coef", "logLik", "optim", "pnorm", "printCoefmat",
            "vcov")
 
+exportMethods(optValue)
 exportMethods(rSquared)
