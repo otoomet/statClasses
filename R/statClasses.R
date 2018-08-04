@@ -603,16 +603,6 @@ setMethod("nObs", "polr", function(x) x$n)
 setMethod("nObs", "prq", function(x) as.integer(x$nObs))
 setMethod("nObs", "Stat", function(x) x@nObs)
 
-### optValue: optimal value of the estimated model
-setGeneric("optValue",
-           function(object, ...) {
-              res <- standardGeneric("optValue")
-              res
-           }
-           )
-setMethod("optValue", "Dice", function(object) object$estimate$best.y)
-setMethod("optValue", "Grid", function(object) min(object[,"dist"]))
-
 plot.Estimates <- function(x, y, ..., conf.int=FALSE,
                       xlab="",
                            ylab,
