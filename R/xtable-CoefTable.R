@@ -32,12 +32,16 @@ xtable.CoefTable <- function(object, sd=TRUE,
             else
                            # long
                c("r", "l", rep(c("r@{}", "l"), length(jCoef)))
+   ## make aux matrix
+print(aMat)   
+   
    if(nrow(object@auxiliary) > 0) {
       aMat <- matrix("", nrow(object@auxiliary), ncol(tt))
       row.names(aMat) <- row.names(object@auxiliary)
       aMat[,jCoef] <- formatCNA(object@auxiliary, format="d")
       tt <- rbind(tt, aMat)
    }
+   ##
    tt <- cbind("."=row.names(tt), tt)
    row.names(tt) <- NULL
    xt <- xtable::xtable(tt, align=align)

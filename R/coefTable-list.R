@@ -86,16 +86,8 @@ coefTable.List <- function(object,
                            # otherwise there will be problems with different
                            # lengths of vectors
    }
-   aux <- sapply(data, function(x) unlist(x@auxiliary))
-                           # as @auxiliary is a list, we have to transform it to a vector in order
-                           # for 'sapply' to return a matrix
-   if(all(sapply(aux, is.null)))
-       aux <- matrix(0, 0, length(aux))
-   else if(!is.matrix(aux)) {
-      aux <- matrix(aux, 1, length(aux))
-   }
-   if(length(aux) == 0)
-       aux <- matrix(0,0,0)
+   aux <- lapply(data, function(x) x@auxiliary)
+   ##
    new("CoefTable",
        table = t,
        iCoef = iCoef,

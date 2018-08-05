@@ -63,25 +63,6 @@ setClass("Stat",
                         vcov = "matrix"
                         ))
 
-### Various tables.  Intended to merge several of objects into a single
-### table
-setClass("CoefTable",
-         representation(table = "matrix",
-                           # the table contents in a matrix
-                        iCoef = "numeric",
-                           # rows for coefficients
-                        iStdd = "numeric",
-                           # rows for standard errors
-                        jCoef = "numeric",
-                        jStdd = "numeric",
-                        jStar = "numeric",
-                           # rows for t-values
-                        auxiliary = "matrix"
-                           # matrix to keep nObs, R^2, etc.
-                           # Row names are the names of this data
-                        ))
-
-
 ### ------------------------------------------------
 ### Explain the inheritance of the old classes
 ### ------------------------------------------------
@@ -322,13 +303,6 @@ rm(c.IntervalEstimates)
 
 # --------------- coef methods ----------------
 setMethod("coef", "Results", function(object) object@coefficients)
-
-## CoefTable: various tables for various objects
-setGeneric("coefTable",
-           function(object, ...) {
-              standardGeneric("coefTable")
-           }
-           )
 
 coefTable.maxLik <- function(object, ...) {
    coefTable(as(object, "Estimates"), ...)   
@@ -763,34 +737,6 @@ rBind.CoefTable <- function(x, y) {
 setMethod("rBind", signature("CoefTable", "CoefTable"), rBind.CoefTable)
 rm(rBind.CoefTable)
 setMethod("rBind", signature("NULL", "CoefTable"), function(x, y) y)
-
-## show tables on screen
-show.CoefTable <- function(object) {
-   tt <- matrix("", nrow(object@table), ncol(object@table))
-                           # matrix of formatted coefficients and significance marks
-   dimnames(tt) <- dimnames(object@table)
-   iCoef <- object@iCoef
-   iStdd <- object@iStdd
-   jCoef <- object@jCoef
-   jStdd <- object@jStdd
-   jStar <- object@jStar
-   tt[iCoef,jCoef] <- formatCNA(object@table[iCoef, jCoef], width=6, digits=3, format="f")
-   tt[iStdd,jStdd] <- formatCNA(object@table[iStdd, jStdd], width=6, digits=3, format="f")
-   tt[iCoef,jStar] <- as.character(cut(object@table[iCoef, jStar], 
-                                       breaks=qnorm(c(0, 0.95, 0.975, 0.995, 0.9995, 1)),
-                                       labels=c("", ".", "*", "**", "***"),
-                                       right=FALSE))
-   tt[is.na(tt)] <- ""
-   if(nrow(object@auxiliary) > 0) {
-      aMat <- matrix("", nrow(object@auxiliary), ncol(tt))
-      row.names(aMat) <- row.names(object@auxiliary)
-      aMat[,jCoef] <- formatCNA(object@auxiliary)
-      tt <- rbind(tt, aMat)
-   }
-   print(tt, quote=FALSE)
-}
-setMethod("show", "CoefTable", show.CoefTable)
-rm(show.CoefTable)
 
 ## show stat objects
 show.Estimates <- function(object) {

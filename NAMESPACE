@@ -7,7 +7,8 @@ importFrom("stats", "coef", "logLik", "optim", "pnorm", "printCoefmat",
            "vcov")
 
 exportMethods(coefTable,
-              coerce)
-exportMethods(optValue)
+              coerce,
+              optValue,
+              show)
 exportMethods(rSquared)
 exportMethods(xtable)
