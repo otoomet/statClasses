@@ -1,13 +1,13 @@
-export( "rSquared" )
-
 importFrom("methods", "new", "show", "slot", "slot<-", "slotNames",
            "validObject")
 importFrom( "miscTools", "nObs" )
 importFrom( "miscTools", "nParam" )
-importFrom( "miscTools", "sumKeepAttr" )
 importFrom( "miscTools", "stdEr" )
 importFrom("stats", "coef", "logLik", "optim", "pnorm", "printCoefmat",
            "vcov")
 
+exportMethods(coefTable,
+              coerce)
 exportMethods(optValue)
 exportMethods(rSquared)
+exportMethods(xtable)

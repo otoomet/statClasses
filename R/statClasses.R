@@ -151,43 +151,6 @@ setAs("maxLik", "Stat",
           auxiliary=list(nObs=nObs(from))
           ))
 
-polrToEstimates <- function(from, to) {
-   ## 'polr' (ordered) models from MASS
-   ## the problem is that this class includes two types of coefficients:
-   ## the real coefficients (returned by 'coef') and 'zetas'.
-   ## vcov, however, is for all coefs.
-   ## 
-   allCoefs <- c(coef(from), from$zeta)
-   new(to,
-       coefficients=allCoefs,
-       sd=sd(from),
-       auxiliary = list(nObs=nObs(from), AIC=AIC(from))
-       )
-}
-setAs("polr", "Estimates", polrToEstimates)
-rm(polrToEstimates)
-
-polrToStat <- function(from, to) {
-   ## 'polr' (ordered) models from MASS
-   ## the problem is that this class includes two types of coefficients:
-   ## the real coefficients (returned by 'coef') and 'zetas'.
-   ## vcov, however, is for all coefs.
-   ## 
-   allCoefs <- c(coef(from), from$zeta)
-   vcov <- matrix(0, nrow=length(allCoefs), ncol=length(allCoefs))
-   vcov[] <- NA
-   colnames(vcov) <- row.names(vcov) <- names(allCoefs)
-   vclm <- vcov(from)
-   vcov[row.names(vclm), colnames(vclm)] <- vclm
-   new(to,
-       coefficients=allCoefs,
-       vcov=vcov,
-       auxiliary = list(nObs=nObs(from), AIC=AIC(from))
-       )
-}
-setAs("polr", "Stat", polrToStat)
-rm(polrToStat)
-
 ### -------------------------------------------------
 ### Methods
 ### -------------------------------------------------
@@ -373,10 +336,8 @@ coefTable.maxLik <- function(object, ...) {
 setMethod("coefTable", "maxLik", coefTable.maxLik)
 rm(coefTable.maxLik)
 
-setMethod("coefTable", "glmerMod", function(object, ...) coefTable(as(object, "Estimates"), ...))
 setMethod("coefTable", "lm", function(object, ...) coefTable(as(object, "Stat"), ...))
 setMethod("coefTable", "lmc", function(object, ...) coefTable(as(object, "Stat"), ...))
-setMethod("coefTable", "polr", function(object, ...) coefTable(as(object, "Stat"), ...))
 
 coefTable.prq <- function(object, ...) {
    ##
@@ -443,116 +404,6 @@ setMethod("coefTable", "Estimates", coefTable.Estimates)
 setMethod("coefTable", "Stat", function(object, ...) coefTable(as(object, "Estimates"), ...))
 rm(coefTable.Estimates)
 
-coefTable.List <- function(object, 
-                           direction="long") {
-   ## create matrix where std errors are below/after coefficents and significance stars are next to coefficients.
-   ## Here we return a matrix with numeric values, and numeric t-values.
-   ## The presentation methods must convert it to a meaningful output.
-   ## We construct one (well, two) vertical columns for each object
-   ## and merge them sidewise.
-   ##
-   ## object        a list of objects, iherited from 'Estimates'
-   ## direction     whether to put standard errors below ('long') or
-   ##               left ('wide') of the estimates
-   ##
-   data <- list()
-                           # data: holds only objects which can be coerced to 'Estimates'
-   names <- character(0)
-                           # all coefficent names
-   for(i in seq(along=object)) {
-      sy <- as(object[[i]], "Estimates")
-      if(class(sy) == "Estimates") {
-         data <- c(data, list(sy))
-         if(!is.null(n <- names(sy)))
-             newNames <- n
-         else
-             newNames <- seq(along=coef(sy))
-         names <- union(names, newNames)
-         names(data)[length(data)] <- names(object)[i]
-      }
-      else {
-         warning("Object of class", class(sy), "cannot be coerced to 'Estimates'")
-      }
-   }
-#   data <- object
-   if(is.null(names(data))) {
-      names(data) <- paste("C", seq(along=data), sep="")
-   }
-   if(direction == "long") {
-      rowHeight <- 2
-      colWidth <- 2
-      iStdOffset <- 1
-      jStdOffset <- 0
-   }
-   else if(direction == "wide") {
-      rowHeight <- 1
-      colWidth <- 3
-      iStdOffset <- 0
-      jStdOffset <- 1
-   }
-   else {
-      stop("'direction' must be either 'long' or 'wide'")
-   }
-   t <- matrix(0, rowHeight*length(names), colWidth*length(data))
-   nObs <- integer(length(data))
-   t[] <- NA
-   iCoef <- seq(from=1, to=nrow(t), by=rowHeight)
-   iStdd <- iStdOffset + iCoef
-   names(iCoef) <- names(iStdd) <- names
-   jCoef <- seq(from=1, to=ncol(t), by=colWidth)
-   jStdd <- jStdOffset + jCoef
-   jStar <- jStdOffset + 1 + jCoef
-   colnames(t) <- rep("", ncol(t))
-   if(!is.null(names(data)))
-       colnames(t)[jCoef] <- names(data)
-   row.names(t) <- rep("", nrow(t))
-   row.names(t)[iCoef] <- names
-   for(i in seq(length=length(data))) {
-      x <- data[[i]]
-      nmx <- names(coef(x))
-      if(is.null(nmx))
-          nmx <- seq(along=coef(x))
-      t[iCoef[nmx], jCoef[i]] <- cf <- coef(x)
-      ## now we have to handle the case where some estimates are NA and we have less
-      ## components in sd (sometimes NA-s are not present).
-      ## We do this by using the corresponding names
-      ste <- sd(x)
-      nme <- names(ste)
-      if(is.null(nmx))
-          nme <- seq(along=ste)
-      iStE <- iStdd[nme]
-      t[iStE, jStdd[i]] <- ste
-                           # only write non-NA standard errors
-      iCf <- iCoef[nmx]
-      iCf <- iCf[!is.na(cf)]
-      t[iCoef, jStar[i]] <- abs(t[iCoef,jCoef[i]]/t[iStdd,jStdd[i]])
-                           # transform all coefficients/stdd-s, including NA-s
-                           # otherwise there will be problems with different
-                           # lengths of vectors
-   }
-   aux <- sapply(data, function(x) unlist(x@auxiliary))
-                           # as @auxiliary is a list, we have to transform it to a vector in order for 'sapply' to return a matrix
-   if(all(sapply(aux, is.null)))
-       aux <- matrix(0, 0, length(aux))
-   else if(!is.matrix(aux)) {
-      aux <- matrix(aux, 1, length(aux))
-   }
-   if(length(aux) == 0)
-       aux <- matrix(0,0,0)
-   new("CoefTable",
-       table = t,
-       iCoef = iCoef,
-       iStdd = iStdd,
-       jCoef = jCoef,
-       jStdd = jStdd,
-       jStar = jStar,
-       auxiliary = aux
-                           # aux is a matrix where cols correspond to models and rows to data
-       )
-}
-setMethod("coefTable", "list", coefTable.List)
-rm(coefTable.List)
-
 ## return estimated coefficients and std errors, eventually for parameter 'name'
 ## This contrasts to 'coef' which returns only coefficients and 'sd' which returns just std errors
 setGeneric("estimate",
@@ -599,7 +450,6 @@ rm(names.Estimates)
 
 library(miscTools)
 setMethod("nObs", "minority", function(x) length(x$residuals))
-setMethod("nObs", "polr", function(x) x$n)
 setMethod("nObs", "prq", function(x) as.integer(x$nObs))
 setMethod("nObs", "Stat", function(x) x@nObs)
 
@@ -1000,8 +850,6 @@ setMethod("sd", "Stat", function(x) sqrt(diag(x@vcov)))
 ## }
 ## setMethod("sd", "lm", sd.lm)
 ## rm(sd.lm)
-## setMethod("sd", "polr",
-##           function(object) sqrt(diag(vcov(object))))
 ## setMethod("sd", "prq", function(object) object$sd)
 ## setMethod("sd", "Stat", function(object) sqrt(diag(vcov(object))))
 
@@ -1045,49 +893,4 @@ vcov.rq <- function(object, ...) {
    vc <- s$cov
    dimnames(vc) <- list(names(coef(object)), names(coef(object)))
    vc
-}
-
-xtable.CoefTable <- function(object, sd=TRUE,
-                             ...) {
-   library(xtable)
-   tt <- matrix("", nrow(object@table), ncol(object@table))
-   dimnames(tt) <- dimnames(object@table)
-   colnames(tt)[colnames(tt) == ""] <- "."
-   iCoef <- object@iCoef
-   iStdd <- object@iStdd
-   jCoef <- object@jCoef
-   jStdd <- object@jStdd
-   jStar <- object@jStar
-   tt[iCoef, jCoef] <- formatCNA(object@table[iCoef, jCoef], width=6, digits=3, format="f")
-   tt[iStdd, jStdd] <- paste("\\std{", formatCNA(object@table[iStdd, jStdd], width=6, digits=3, format="f"), "}", sep="")
-   tt[iCoef,jStar] <- as.character(cut(object@table[iCoef, jStar], 
-                                       breaks=qnorm(c(0, 0.95, 0.975, 0.995, 1)),
-                                       labels=c("", "*", "**", "***"),
-                                       right=FALSE))
-   tt[is.na(tt)] <- ""
-   if(!sd) {
-      if(all(iCoef == iStdd)) {
-                           # wide format
-         tt <- tt[,-jStdd]
-      }
-      else {
-         tt <- tt[-jCoef,]
-      }
-   }
-   align <- if(all(iCoef == iStdd))
-                           # wide
-               c("r", "l", rep(c("r", "r@{}", "l"), length(jCoef)))
-            else
-                           # long
-               c("r", "l", rep(c("r@{}", "l"), length(jCoef)))
-   if(nrow(object@auxiliary) > 0) {
-      aMat <- matrix("", nrow(object@auxiliary), ncol(tt))
-      row.names(aMat) <- row.names(object@auxiliary)
-      aMat[,jCoef] <- formatCNA(object@auxiliary, format="d")
-      tt <- rbind(tt, aMat)
-   }
-   tt <- cbind("."=row.names(tt), tt)
-   row.names(tt) <- NULL
-   xt <- xtable(tt, align=align)
-   xt
 }
