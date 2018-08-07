@@ -10,9 +10,19 @@ auxMat <- function(auxList) {
          as.character(dat)
    }
    ##
-   aMat <- lapply(auxList
+   aList <- lapply(auxList,
                   function(aux) sapply(aux, auxFormat)
                   )
-   
+   aMat <- data.frame(names=character())
+   for(i in seq(along=aList)) {
+      aVec <- aList[[i]]
+      aFrame <- data.frame(names=names(aVec), val=aVec, stringsAsFactors=FALSE)
+      names(aFrame)[2] <- names(aList)[i]
+      aMat <- merge(aMat, aFrame, all=TRUE)
+   }
+   names <- aMat$names
+   aMat <- as.matrix(aMat[,-1, drop=FALSE])
+   row.names(aMat) <- names
+   aMat
 }
 

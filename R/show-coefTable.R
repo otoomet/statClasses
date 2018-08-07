@@ -16,7 +16,11 @@ show.CoefTable <- function(object) {
                                        labels=c("", ".", "*", "**", "***"),
                                        right=FALSE))
    tt[is.na(tt)] <- ""
-   print(auxMat(object@auxiliary))
+   aMat <- auxMat(object@auxiliary)
+   aTt <- matrix("", nrow(aMat), ncol(tt))
+   row.names(aTt) <- row.names(aMat)
+   aTt[,jCoef] <- aMat
+   tt <- rbind(tt, aTt)
    print(tt, quote=FALSE)
 }
 setMethod("show", "CoefTable", show.CoefTable)
