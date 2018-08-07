@@ -33,13 +33,12 @@ xtable.CoefTable <- function(object, sd=TRUE,
                            # long
                c("r", "l", rep(c("r@{}", "l"), length(jCoef)))
    ## make aux matrix
-print(aMat)   
-   
-   if(nrow(object@auxiliary) > 0) {
-      aMat <- matrix("", nrow(object@auxiliary), ncol(tt))
-      row.names(aMat) <- row.names(object@auxiliary)
-      aMat[,jCoef] <- formatCNA(object@auxiliary, format="d")
-      tt <- rbind(tt, aMat)
+   if(!is.null(object@auxiliary)) {
+      aMat <- auxMat(object@auxiliary)
+      aTt <- matrix("", nrow(aMat), ncol(tt))
+      row.names(aTt) <- row.names(aMat)
+      aTt[,jCoef] <- aMat
+      tt <- rbind(tt, aTt)
    }
    ##
    tt <- cbind("."=row.names(tt), tt)
