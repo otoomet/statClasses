@@ -4,24 +4,6 @@ library(methods)
 
 
 
-### class 'Results' keeps various numeric vectors
-setClass("Results",
-         representation(coefficients = "numeric",
-                           # should be named
-                        ## The following slots are for specific
-                        ## purposes (like # of obs)
-                        auxiliary = "list",
-                        description = "character"
-                           # name or description of data
-                        ))
-
-### class 'Estimates' vectors with standard errors various estimated vectors which have
-### corresponding standard errors
-setClass("Estimates",
-         representation("Results",
-                        sd = "numeric"
-                        ))
-
 ### class 'SequentialEstimates' vectors with standard errors
 ### various estimated vectors which have
 ### corresponding standard errors.
@@ -82,16 +64,6 @@ setAs("Stat", "Estimates", function(from, to)
           sd=sd(from),
           auxiliary=from@auxiliary))
           
-lmToEstimates <- function(from, to="Estimates", vCov=vcov) {
-   ## transforms 'lm' to estimates allowing to specify a specific,
-   ## such as HC-consistent var-covar matrix
-   new(to,
-       coefficients=coef(from),
-       sd=sd(from, vCov=vCov),
-       auxiliary = list(nObs=nObs(from), rSquared=rSquared(from))
-       )
-}
-setAs("lm", "Estimates", function(from) lmToEstimates(from))
 setAs("lmc", "Estimates", function(from) lmToEstimates(from))
 
 maxLikToEstimates <- function(from, to="Estimates") {
