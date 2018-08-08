@@ -57,15 +57,7 @@ setOldClass(c("Grid", "matrix"))
 ### -------------------------------------------------
 ### As
 ### -------------------------------------------------
-
-setAs("Stat", "Estimates", function(from, to)
-      new(to,
-          coefficients=coef(from),
-          sd=sd(from),
-          auxiliary=from@auxiliary))
           
-setAs("lmc", "Estimates", function(from) lmToEstimates(from))
-
 maxLikToEstimates <- function(from, to="Estimates") {
    n <- try(nObs(from),
             silent=TRUE)
@@ -710,19 +702,6 @@ setMethod("rBind", signature("CoefTable", "CoefTable"), rBind.CoefTable)
 rm(rBind.CoefTable)
 setMethod("rBind", signature("NULL", "CoefTable"), function(x, y) y)
 
-## show stat objects
-show.Estimates <- function(object) {
-   ## print an object with methods 'coef' and 'sd'
-   t <- abs(coef(object)/sd(object))
-   mat <- cbind("Estimate"=coef(object), "Std. Error"=sd(object),
-                      "t value"=t, "Pr(>|t|)"=2*pnorm(-t))
-   row.names(mat) <- names(coef(object))
-   printCoefmat(mat, cs.ind=1:2, tst.ind=3, P.values=TRUE)
-}
-setMethod("show", "Estimates", show.Estimates)
-setMethod("show", "Stat", show.Estimates)
-rm(show.Estimates)
-
 ## show SequentialEstimates objects
 show.SequentialEstimates <- function(object) {
    ## print an object with methods 'coef' and 'sd' and "sequence"
@@ -744,32 +723,6 @@ show.SequentialEstimates <- function(object) {
 }
 setMethod("show", "SequentialEstimates", show.SequentialEstimates)
 rm(show.SequentialEstimates)
-
-## sd: extract the standard errors.  If necessary, specify the component
-## Return it as numeric vector
-## setGeneric("sd",
-##            function(object, ...) {
-##               standardGeneric("sd")
-##            }
-##            )
-# cannot use in this way -- clashes with S3 method
-
-sd.Estimates <- function(x) {
-   x@sd
-}
-setMethod("sd", "Estimates", sd.Estimates)
-rm(sd.Estimates)
-setMethod("sd", "Stat", function(x) sqrt(diag(x@vcov)))
-
-## sd.lm <- function(object, vCov=vcov) {
-##    ## vCov: you can supply various other (such as robust)
-##    ## CV estimator functions here
-##    sqrt(diag(vCov(object)))
-## }
-## setMethod("sd", "lm", sd.lm)
-## rm(sd.lm)
-## setMethod("sd", "prq", function(object) object$sd)
-## setMethod("sd", "Stat", function(object) sqrt(diag(vcov(object))))
 
 setGeneric("UED",
            function(x, ...) {

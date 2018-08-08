@@ -70,9 +70,9 @@ coefTable.List <- function(object,
           nmx <- seq(along=coef(x))
       t[iCoef[nmx], jCoef[i]] <- cf <- coef(x)
       ## now we have to handle the case where some estimates are NA and we have less
-      ## components in sd (sometimes NA-s are not present).
+      ## components in std.dev (sometimes NA-s are not present).
       ## We do this by using the corresponding names
-      ste <- sd(x)
+      ste <- stdEr(x)
       nme <- names(ste)
       if(is.null(nmx))
           nme <- seq(along=ste)

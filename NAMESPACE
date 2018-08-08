@@ -12,5 +12,6 @@ exportMethods(coefTable,
               coerce,
               optValue,
               rSquared,
-              show)
-exportMethods(xtable)
+              show,
+              stdEr,
+              xtable)
