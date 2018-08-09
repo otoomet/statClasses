@@ -1,8 +1,4 @@
 
-### Class definitions
-library(methods)
-
-
 
 ### class 'SequentialEstimates' vectors with standard errors
 ### various estimated vectors which have
