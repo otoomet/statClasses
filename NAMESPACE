@@ -1,15 +1,15 @@
 importFrom("methods", "new", "show", "slot", "slot<-", "slotNames",
            "validObject")
-importFrom( "miscTools", "nObs" )
-importFrom( "miscTools", "nParam" )
-importFrom( "miscTools", "stdEr" )
+importFrom("miscTools", "nObs", "nParam", "stdEr")
 importFrom("stats", "coef", "logLik", 
            "vcov")
+importFrom("xtable", "xtable")
 
 exportClasses(Estimates, Results)
 
 exportMethods(coefTable,
               coerce,
+              nObs,
               optValue,
               rSquared,
               show,
