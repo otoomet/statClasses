@@ -1,6 +1,6 @@
 Package: statClasses
-Version: 0.0-5
-Date: 2018-08-20
+Version: 0.0-6
+Date: 2018-08-21
 Title: classes and methods for statistical results
 Author: Ott Toomet <otoomet@gmail.com>
 Maintainer: Ott Toomet <otoomet@gmail.com>
@@ -13,7 +13,9 @@ Description: classes and methods to consistently handle statistical
 License: GPL 3
 ByteCompile: yes
 Collate:
+	'classes.R'
 	'Class-Results.R'
+	'Class-Stat.R'
 	'Class-Estimates.R'
 	'Class-CoefTable.R'
 	'Generic-coefTable.R'
@@ -26,9 +28,11 @@ Collate:
 	'rSquared-lm.R'
 	'setAs-Stat.R'
 	'setAs-lm.R'
+	'setAs-nls.R'
 	'stdEr-Estimates.R'
 	'stdEr-Stat.R'
 	'stdEr-lm.R'
+	'stdEr-nls.R'
 	'show-Estimates.R'
 	'show-coefTable.R'
 	'statClasses.R'

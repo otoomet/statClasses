@@ -17,7 +17,9 @@ auxMat <- function(auxList) {
    for(i in seq(along=aList)) {
       aVec <- aList[[i]]
       aFrame <- data.frame(names=names(aVec), val=aVec, stringsAsFactors=FALSE)
-      names(aFrame)[2] <- names(aList)[i]
+      if(length(names(aFrame)) > 1) {
+         names(aFrame)[2] <- names(aList)[i]
+      }
       aMat <- merge(aMat, aFrame, all=TRUE)
    }
    names <- aMat$names

@@ -35,12 +35,6 @@ setClass("IntervalEstimates",
                         sequenceName = "character"
                         ))
 
-### class 'Stat' results estimates with var-covar matrix
-setClass("Stat",
-         representation("Results",
-                        vcov = "matrix"
-                        ))
-
 ### ------------------------------------------------
 ### Explain the inheritance of the old classes
 ### ------------------------------------------------
@@ -48,7 +42,6 @@ setClass("Stat",
 setOldClass(c("coef.intReg","numeric"))
 setOldClass(c("regionDummy","intReg", "maxLik"))
 setOldClass(c("lmc", "lm"))
-setOldClass(c("Grid", "matrix"))
 
 ### -------------------------------------------------
 ### As
@@ -273,40 +266,6 @@ rm(coefTable.maxLik)
 setMethod("coefTable", "lm", function(object, ...) coefTable(as(object, "Stat"), ...))
 setMethod("coefTable", "lmc", function(object, ...) coefTable(as(object, "Stat"), ...))
 
-coefTable.prq <- function(object, ...) {
-   ##
-   colnames <- colnames(coef(object))
-   coefNames <- row.names(coef(object))
-   t <- matrix(0, 2*length(coefNames), 2*length(colnames))
-   nObs <- integer(ncol(coef(object)))
-   t[] <- NA
-   iCoef <- seq(from=1, to=nrow(t), by=2)
-   iStdd <- 1 + iCoef
-   names(iCoef) <- names(iStdd) <- coefNames
-   jCoef <- seq(from=1, to=ncol(t), by=2)
-   jStar <- 1 + jCoef
-   colnames(t) <- rep("", ncol(t))
-   colnames(t)[jCoef] <- colnames
-   row.names(t) <- rep("", nrow(t))
-   row.names(t)[iCoef] <- coefNames
-   for(i in seq(length=ncol(coef(object)))) {
-      t[iCoef, jCoef[i]] <- cf <- coef(object)[,i]
-      t[iStdd, jCoef[i]] <- ste <- sd(object)[,i]
-      t[iCoef, jStar[i]] <- abs(cf/ste)
-      nObs[i] <- nObs(object)
-   }
-   new("CoefTable",
-       table = t,
-       iCoef = iCoef,
-       iStdd = iStdd,
-       jCoef = jCoef,
-       jStar = jStar,
-       nObs = nObs,
-       )
-}
-setMethod("coefTable", "prq", coefTable.prq)
-rm(coefTable.prq)
-
 coefTable.Estimates <- function(object, ..., direction="wide") {
    ## create matrix where std errors are below/after coefficents and significance stars are next to coefficients.
    ## Here we return a matrix with numeric values, and numeric t-values.
@@ -384,7 +343,6 @@ rm(names.Estimates)
 
 library(miscTools)
 setMethod("nObs", "minority", function(x) length(x$residuals))
-setMethod("nObs", "prq", function(x) as.integer(x$nObs))
 setMethod("nObs", "Stat", function(x) x@nObs)
 
 plot.Estimates <- function(x, y, ..., conf.int=FALSE,
