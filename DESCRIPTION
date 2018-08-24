@@ -1,6 +1,6 @@
 Package: statClasses
-Version: 0.0-6
-Date: 2018-08-21
+Version: 0.0-7
+Date: 2018-08-23
 Title: classes and methods for statistical results
 Author: Ott Toomet <otoomet@gmail.com>
 Maintainer: Ott Toomet <otoomet@gmail.com>
@@ -28,6 +28,7 @@ Collate:
 	'rSquared-lm.R'
 	'setAs-Stat.R'
 	'setAs-lm.R'
+	'setAs-maxim.R'
 	'setAs-nls.R'
 	'stdEr-Estimates.R'
 	'stdEr-Stat.R'
