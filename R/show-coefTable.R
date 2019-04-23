@@ -1,5 +1,6 @@
 
 ## show tables on screen
+#' @export
 show.CoefTable <- function(object) {
    tt <- matrix("", nrow(object@table), ncol(object@table))
                            # matrix of formatted coefficients and significance marks

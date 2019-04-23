@@ -1,4 +1,4 @@
-
+#' @importFrom xtable xtable
 xtable.CoefTable <- function(object, sd=TRUE,
                              ...) {
    library(xtable)

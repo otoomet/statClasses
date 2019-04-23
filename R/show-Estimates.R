@@ -1,5 +1,6 @@
 
 ## show stat objects
+#' @export
 show.Estimates <- function(object) {
    ## print an object with methods 'coef' and 'sd'
    t <- abs(coef(object)/stdEr(object))

@@ -1,5 +1,8 @@
-
 ### class 'Results' keeps various numeric vectors
+
+#' @importFrom methods "new" "show" "slot" "slot<-" "slotNames" "validObject"
+
+#' @export
 setClass("Results",
          representation(coefficients = "numeric",
                            # should be named

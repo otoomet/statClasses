@@ -1,4 +1,4 @@
-
+#' @export
 coefTable.List <- function(object, 
                            direction="long") {
    ## create matrix where std errors are below/after coefficents and significance stars are next to coefficients.

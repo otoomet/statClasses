@@ -341,10 +341,6 @@ names.Estimates <- function(x, value) {
 setMethod("names<-", "Estimates", names.Estimates)
 rm(names.Estimates)
 
-library(miscTools)
-setMethod("nObs", "minority", function(x) length(x$residuals))
-setMethod("nObs", "Stat", function(x) x@nObs)
-
 plot.Estimates <- function(x, y, ..., conf.int=FALSE,
                       xlab="",
                            ylab,
@@ -708,7 +704,6 @@ varValue.lm <- function(x, var="^Estonian", group) {
        )
 }
 setMethod("varValue", "lm", varValue.lm)
-setMethod("varValue", "minority", varValue.lm)
 rm(varValue.lm)
    
 setMethod("vcov", "Stat", function(object, ...) object@vcov)

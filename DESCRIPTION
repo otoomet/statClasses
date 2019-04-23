@@ -1,6 +1,7 @@
 Package: statClasses
-Version: 0.0-7
-Date: 2018-08-23
+Version: 0.0-8
+Date: 2019-04-23
+Encoding: UTF-8
 Title: classes and methods for statistical results
 Author: Ott Toomet <otoomet@gmail.com>
 Maintainer: Ott Toomet <otoomet@gmail.com>
@@ -24,7 +25,9 @@ Collate:
 	'Generic-stdEr.R'
 	'Generic-xtable.R'
 	'auxMat.R'
+	'formatCNA.R'
 	'coefTable-list.R'
+	'nObs-Stat.R'
 	'rSquared-lm.R'
 	'setAs-Stat.R'
 	'setAs-lm.R'
@@ -38,3 +41,4 @@ Collate:
 	'show-coefTable.R'
 	'statClasses.R'
 	'xtable-CoefTable.R'
+RoxygenNote: 6.1.1
