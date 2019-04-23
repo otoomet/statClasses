@@ -2,6 +2,7 @@
 
 export()
 export(coefTable)
+export(formatCNA)
 export(lmToEstimates)
 export(maximToEstimates)
 export(optValue)
