@@ -1,2 +1,2 @@
 
-setMethod("stdEr", "nls", function(object, ...) sqrt(diag(vcov(object))))
+setMethod("stdEr", "nls", function(x, ...) sqrt(diag(vcov(x))))

@@ -1,17 +1,18 @@
 Package: statClasses
-Version: 0.0-8
-Date: 2019-04-23
+Version: 0.0-9
+Date: 2021-11-30
 Encoding: UTF-8
 Title: classes and methods for statistical results
 Author: Ott Toomet <otoomet@gmail.com>
 Maintainer: Ott Toomet <otoomet@gmail.com>
-Depends: R (>= 2.4.0), methods
+Depends: R (>= 2.4.0)
+Imports: methods, miscTools, stats, xtable
 Suggests: xtable
 Description: classes and methods to consistently handle statistical
    objects, such as estimated models, that include standard
    errors/variance-covariance matrices, or similar.  Includes printing
    the tables of results.
-License: GPL 3
+License: GPL-3
 ByteCompile: yes
 Collate:
 	'classes.R'
@@ -22,13 +23,15 @@ Collate:
 	'Generic-coefTable.R'
 	'Generic-optValue.R'
 	'Generic-rSquared.R'
-	'Generic-stdEr.R'
 	'Generic-xtable.R'
 	'auxMat.R'
+	'epsFName.R'
 	'formatCNA.R'
 	'coefTable-list.R'
+	'grSetup.R'
 	'nObs-Stat.R'
 	'rSquared-lm.R'
+	'plot-Estimates.R'
 	'setAs-Stat.R'
 	'setAs-lm.R'
 	'setAs-maxim.R'
@@ -40,5 +43,5 @@ Collate:
 	'show-Estimates.R'
 	'show-coefTable.R'
 	'statClasses.R'
+	'varValue-lm.R'
 	'xtable-CoefTable.R'
-RoxygenNote: 6.1.1

@@ -13,7 +13,7 @@ show.CoefTable <- function(object) {
    tt[iCoef,jCoef] <- formatCNA(object@table[iCoef, jCoef], width=6, digits=3, format="f")
    tt[iStdd,jStdd] <- formatCNA(object@table[iStdd, jStdd], width=6, digits=3, format="f")
    tt[iCoef,jStar] <- as.character(cut(object@table[iCoef, jStar], 
-                                       breaks=qnorm(c(0, 0.95, 0.975, 0.995, 0.9995, 1)),
+                                       breaks=stats::qnorm(c(0, 0.95, 0.975, 0.995, 0.9995, 1)),
                                        labels=c("", ".", "*", "**", "***"),
                                        right=FALSE))
    tt[is.na(tt)] <- ""

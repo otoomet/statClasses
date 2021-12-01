@@ -1,2 +1,2 @@
 #' @export
-setMethod("stdEr", "Estimates", function(object) object@stdEr)
+setMethod("stdEr", "Estimates", function(x) x@stdEr)

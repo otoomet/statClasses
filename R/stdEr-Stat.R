@@ -1,2 +1,2 @@
 #' @export
-setMethod("stdEr", "Stat", function(object) sqrt(diag(vcov(object))))
+setMethod("stdEr", "Stat", function(x) sqrt(diag(vcov(x))))

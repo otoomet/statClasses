@@ -1,2 +1,2 @@
 #' @importFrom miscTools nObs nParam stdEr
-setMethod("stdEr", "lm", function(object, ...) sqrt(diag(vcov(object))))
+setMethod("stdEr", "lm", function(x, ...) sqrt(diag(vcov(x))))
